@@ -1,8 +1,9 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, override
 
 from task_pipeline.pipeline.task.abstract_task import AbstractTask
+
 
 @dataclass
 class BaseTask(AbstractTask, ABC):
@@ -33,7 +34,7 @@ class BaseTask(AbstractTask, ABC):
     """
 
     name: str
-    next_task: BaseTask | None = field(default=None, repr=False)
+    next_task: "BaseTask" | None = field(default=None, repr=False)
 
     @abstractmethod
     def run(self, *args: Any, **kwargs: Any) -> Any:
@@ -50,7 +51,7 @@ class BaseTask(AbstractTask, ABC):
             Any: Result of the task.
         """
         raise NotImplementedError
-    
+
     def __call__(self, *args: Any, **kwargs: Any) -> Any:
         """
         Execute the task.
@@ -64,28 +65,44 @@ class BaseTask(AbstractTask, ABC):
         """
         return self.run(*args, **kwargs)
 
-    def __rshift__(self, other: "BaseTask") -> "BaseTask":
+    @override
+    def __rshift__(self, other: "AbstractTask") -> "BaseTask":
         """
         Chain this task to the next task using ``>>``.
 
         Args:
-            other (BaseTask): The next task in the pipeline.
+            other (AbstractTask): The next task in the pipeline.
 
         Returns:
             BaseTask: The chained task.
+
+        Raises:
+            TypeError: If `other` is not a BaseTask.
         """
+
+        if not isinstance(other, BaseTask):
+            raise TypeError("Can only chain BaseTask instances")
+
         self.next_task = other
         return other
 
-    def __lshift__(self, other: "BaseTask") -> "BaseTask":
+    @override
+    def __lshift__(self, other: "AbstractTask") -> "BaseTask":
         """
         Chain this task to the previous task using ``<<``.
 
         Args:
-            other (BaseTask): The previous task in the pipeline.
+            other (AbstractTask): The previous task in the pipeline.
 
         Returns:
             BaseTask: This task.
+
+        Raises:
+            TypeError: If `other` is not a BaseTask.
         """
+
+        if not isinstance(other, BaseTask):
+            raise TypeError("Can only chain BaseTask instances")
+
         other.next_task = self
         return self

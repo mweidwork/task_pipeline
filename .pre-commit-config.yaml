@@ -2,6 +2,8 @@
 # Pre-commit configuration
 # ===========================
 exclude: ^(\.copier-answers\.yml)|.pixi$
+default_language_version:
+  python: python3.12
 
 repos:
   - repo: local
@@ -11,7 +13,7 @@ repos:
       # ---------------------------
       - id: pixi-install
         name: Pixi Install Environments
-        entry: pixi install -e default -e lint
+        entry: pixi install -e lint
         language: system
         always_run: true
         require_serial: true
@@ -39,7 +41,7 @@ repos:
       # mypy
       - id: mypy
         name: mypy
-        entry: pixi run -e default mypy {{ project_package_name_snake_case }}
+        entry: pixi run -e default mypy task_pipeline
         language: system
         types: [python]
         require_serial: true

@@ -1,3 +1,6 @@
+from typing import Any
+
+
 class ConditionTaskResolutionError(Exception):
     """Raised when a ConditionTask fails to resolve the next task.
 

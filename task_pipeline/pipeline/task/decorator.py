@@ -1,8 +1,12 @@
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any, cast
+
 from task_pipeline.pipeline.task import BaseTask
 
 
-def task(*, task_type: type[BaseTask], name: str | None = None) -> Callable[[Callable[..., Any]], BaseTask]:
+def task(
+    *, task_type: type[BaseTask], name: str | None = None
+) -> Callable[[Callable[..., Any]], BaseTask]:
     """Decorator that converts a function into a ``BaseTask``.
 
     Args:
@@ -31,7 +35,7 @@ def task(*, task_type: type[BaseTask], name: str | None = None) -> Callable[[Cal
         task_name = name or fn.__name__
 
         t = task_type(name=task_name)
-        fn.__task__ = t
+        cast(Any, fn).__task__ = t
 
         return t
 

@@ -10,6 +10,7 @@
 </div>
 
 ## 🚀 Project introduction
+
 This project is developed by me, Manuel, to explore and evaluate different points of view (POVs) on ETL pipeline design.
 
 The goal is to design and implement a pipeline orchestration logic inspired by tools like Apache Airflow, focusing on core concepts.

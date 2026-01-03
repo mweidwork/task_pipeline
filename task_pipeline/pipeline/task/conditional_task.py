@@ -1,10 +1,12 @@
 from __future__ import annotations
-from dataclasses import dataclass, field
-from typing import Any, Callable
-from abc import ABC
 
-from task_pipeline.pipeline.task.abstract_task import AbstractTask
+from abc import ABC
+from collections.abc import Callable
+from dataclasses import dataclass, field
+from typing import Any
+
 from task_pipeline.pipeline.task import BaseTask, ConditionTaskResolutionError
+from task_pipeline.pipeline.task.abstract_task import AbstractTask
 
 
 @dataclass
@@ -60,7 +62,9 @@ class ConditionTask(AbstractTask, ABC):
         except Exception as exc:
             if self.on_exception:
                 return self.on_exception
-            raise ConditionTaskResolutionError(branch_name=self.name, value=result, func=self.fn) from exc
+            raise ConditionTaskResolutionError(
+                branch_name=self.name, value=result, func=self.fn
+            ) from exc
 
     def __call__(self, *args: Any, **kwargs: Any) -> Any:
         """Execute the conditional task and forward arguments to the next task.

@@ -1,6 +1,7 @@
-from abc import ABC, abstractmethod
-from dataclasses import dataclass, field
-from typing import Any
+from abc import ABC
+from dataclasses import dataclass
+from typing import Any, Self
+
 
 @dataclass
 class AbstractTask(ABC):
@@ -24,7 +25,7 @@ class AbstractTask(ABC):
         """
         raise NotImplementedError
 
-    def __rshift__(self, other: "AbstractTask") -> "AbstractTask":
+    def __rshift__(self, other: "AbstractTask") -> Self:
         """Chain this task to the next task using the ``>>`` operator.
 
         Args:
@@ -35,7 +36,7 @@ class AbstractTask(ABC):
         """
         raise NotImplementedError
 
-    def __lshift__(self, other: "AbstractTask") -> "AbstractTask":
+    def __lshift__(self, other: "AbstractTask") -> Self:
         """Chain this task to the previous task using the ``<<`` operator.
 
         Args:
