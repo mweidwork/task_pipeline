@@ -2,8 +2,6 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from typing import Any
 
-from task_pipeline.pipeline.task.base_task import BaseTask
-
 @dataclass
 class AbstractTask(ABC):
     """
@@ -24,7 +22,7 @@ class AbstractTask(ABC):
         Returns:
             Any: Result of task execution.
         """
-        return self.run(*args, **kwargs)
+        raise NotImplementedError
 
     def __rshift__(self, other: "AbstractTask") -> "AbstractTask":
         """Chain this task to the next task using the ``>>`` operator.

@@ -1,5 +1,5 @@
 from typing import Any, Callable
-from .base_task import BaseTask
+from task_pipeline.pipeline.task import BaseTask
 
 
 def task(*, task_type: type[BaseTask], name: str | None = None) -> Callable[[Callable[..., Any]], BaseTask]:

@@ -3,9 +3,8 @@ from dataclasses import dataclass, field
 from typing import Any, Callable
 from abc import ABC
 
-from . import AbstractTask, BaseTask, ConditionTaskResolutionError
-
-
+from task_pipeline.pipeline.task.abstract_task import AbstractTask
+from task_pipeline.pipeline.task import BaseTask, ConditionTaskResolutionError
 
 
 @dataclass

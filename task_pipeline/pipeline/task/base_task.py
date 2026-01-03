@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from typing import Any
 
-from .abstract_task import AbstractTask
+from task_pipeline.pipeline.task.abstract_task import AbstractTask
 
 @dataclass
 class BaseTask(AbstractTask, ABC):
@@ -33,7 +33,7 @@ class BaseTask(AbstractTask, ABC):
     """
 
     name: str
-    next_task: 'BaseTask' | None = field(default=None, repr=False)
+    next_task: BaseTask | None = field(default=None, repr=False)
 
     @abstractmethod
     def run(self, *args: Any, **kwargs: Any) -> Any:
