@@ -3,7 +3,7 @@
 # ===========================
 exclude: ^(\.copier-answers\.yml)|.pixi$
 default_language_version:
-  python: python3.12
+  python: python3.14
 
 repos:
   - repo: local

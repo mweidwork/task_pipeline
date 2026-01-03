@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from typing import Any, override
@@ -34,7 +36,7 @@ class BaseTask(AbstractTask, ABC):
     """
 
     name: str
-    next_task: "BaseTask" | None = field(default=None, repr=False)
+    next_task: BaseTask | None = field(default=None, repr=False)
 
     @abstractmethod
     def run(self, *args: Any, **kwargs: Any) -> Any:
@@ -66,7 +68,7 @@ class BaseTask(AbstractTask, ABC):
         return self.run(*args, **kwargs)
 
     @override
-    def __rshift__(self, other: "AbstractTask") -> "BaseTask":
+    def __rshift__(self, other: AbstractTask) -> BaseTask:
         """
         Chain this task to the next task using ``>>``.
 
@@ -87,7 +89,7 @@ class BaseTask(AbstractTask, ABC):
         return other
 
     @override
-    def __lshift__(self, other: "AbstractTask") -> "BaseTask":
+    def __lshift__(self, other: AbstractTask) -> BaseTask:
         """
         Chain this task to the previous task using ``<<``.
 
