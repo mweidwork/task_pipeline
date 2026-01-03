@@ -1,0 +1,60 @@
+[build-system]
+requires = [
+  'setuptools',
+  'setuptools-scm'
+]
+
+[tool.setuptools_scm]
+version_scheme = "post-release"
+
+[project]
+name = "task_pipeline"
+description = ""
+authors = [{ name = "Manuel", email = "..@.." }]
+dynamic = ["version"]
+requires-python = ">=3.12"
+readme = "README.md"
+dependencies = []
+
+[project.urls]
+repository = "https://github.com/mweidwork/task-pipeline"
+
+[tool.setuptools.packages.find]
+include = ["task_pipeline"]
+
+[project.scripts]
+
+[tool.ruff]
+line-length = 88
+
+[tool.ruff.lint]
+ignore = [
+  "N803", # https://docs.astral.sh/ruff/rules/invalid-argument-name
+  "N806", # https://docs.astral.sh/ruff/rules/non-lowercase-variable-in-function
+  "E501", # https://docs.astral.sh/ruff/faq/#is-the-ruff-linter-compatible-with-black
+]
+select = [
+  # pyflakes
+  "F",
+  # pycodestyle
+  "E",
+  "W",
+  # isort
+  "I",
+  # pep8-naming
+  "N",
+  # pyupgrade
+  "UP",
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.mypy]
+python_version = '3.12'
+no_implicit_optional = true
+check_untyped_defs = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

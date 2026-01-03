@@ -1,0 +1,57 @@
+# ===========================
+# Pre-commit configuration
+# ===========================
+exclude: ^(\.copier-answers\.yml)|.pixi$
+
+repos:
+  - repo: local
+    hooks:
+      # ---------------------------
+      # Pixi environment updater
+      # ---------------------------
+      - id: pixi-install
+        name: Pixi Install Environments
+        entry: pixi install -e default -e lint
+        language: system
+        always_run: true
+        require_serial: true
+        pass_filenames: false
+
+      # ---------------------------
+      # Python code linting & formatting
+      # ---------------------------
+      - id: ruff
+        name: Ruff Lint
+        entry: pixi run -e lint ruff check --fix --exit-non-zero-on-fix --force-exclude
+        language: system
+        types_or: [python, pyi]
+        require_serial: true
+        always_run: true
+
+      - id: ruff-format
+        name: Ruff Format
+        entry: pixi run -e lint ruff format --force-exclude
+        language: system
+        types_or: [python, pyi]
+        require_serial: true
+        always_run: true
+
+      # mypy
+      - id: mypy
+        name: mypy
+        entry: pixi run -e default mypy {{ project_package_name_snake_case }}
+        language: system
+        types: [python]
+        require_serial: true
+        always_run: true
+
+      # ---------------------------
+      # Markdown/YAML formatting
+      # ---------------------------
+      - id: prettier
+        name: Prettier
+        entry: pixi run -e lint prettier --write --list-different --ignore-unknown
+        language: system
+        types: [text]
+        files: \.(md|yml|yaml)$
+        always_run: true

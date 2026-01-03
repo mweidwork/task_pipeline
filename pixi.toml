@@ -1,0 +1,83 @@
+# ===========================
+# Pixi workspace configuration
+# ===========================
+[workspace]
+name = "task-pipeline"
+channels = ["conda-forge"]
+platforms = ["linux-64", "win-64"]
+
+[tasks]
+# Runs after installation
+postinstall = { cmd = "pip install --no-build-isolation --no-deps --disable-pip-version-check -e ." }
+
+[dependencies]
+python = ">=3.12"
+pip = "*"
+setuptools = "*"
+wheel = "*"
+
+# ===========================
+# Feature: dev
+# ===========================
+[feature.dev.dependencies]
+jupyter = "*"
+
+# ===========================
+# Feature: test
+# ===========================
+[feature.test.dependencies]
+pytest = ">=6"
+pytest-benchmark = "*"
+pytest-cov = "*"
+pytest-md = "*"
+mypy = ">=1.13"
+
+[feature.test.tasks]
+test = "pytest"
+test-coverage = "pytest --cov=task_pipeline --cov-report=xml --cov-report=term-missing"
+
+# ===========================
+# Feature: lint
+# ===========================
+[feature.lint.dependencies]
+docformatter = "*"
+insert-license-header = "*"
+pre-commit = "*"
+pre-commit-hooks = "*"
+prettier = "*"
+ruff = "*"
+taplo = "*"
+typos = "*"
+mypy = "*"
+
+[feature.lint.tasks]
+pre-commit-install = "pre-commit install"
+pre-commit-run = "pre-commit run -a"
+
+# ===========================
+# Feature: docs
+# ===========================
+[feature.docs.dependencies]
+autodocsumm = "*"
+ipython = "*"
+myst-parser = "*"
+nbsphinx = "*"
+numpydoc = "*"
+pydata-sphinx-theme = "*"
+sphinx = ">=8.2"
+sphinx-copybutton = "*"
+sphinx-design = "*"
+sphinx-toolbox = "*"
+[feature.docs.tasks]
+docs = { cmd = "rm -rf _build && find . -name _gen -type d -exec rm -rf \"{}\" + && sphinx-build -M html . _build --fail-on-warning", cwd = "docs", depends-on = "postinstall" }
+readthedocs = { cmd = "rm -rf $READTHEDOCS_OUTPUT/html && cp -r docs/_build/html $READTHEDOCS_OUTPUT/html", depends-on = "docs" }
+
+# ===========================
+# Environments
+# ===========================
+[environments]
+default = ["dev", "test", "lint"]
+test = ["test"]
+docs = ["docs"]
+lint = { features = ["lint"], no-default-feature = true }
+dev = ["dev"]
