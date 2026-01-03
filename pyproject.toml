@@ -10,7 +10,7 @@ version_scheme = "post-release"
 [project]
 name = "task_pipeline"
 description = ""
-authors = [{ name = "Manuel", email = "..@.." }]
+authors = [{ name = "Manuel" }]
 dynamic = ["version"]
 requires-python = ">=3.12"
 readme = "README.md"
