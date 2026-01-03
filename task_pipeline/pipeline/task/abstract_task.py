@@ -1,0 +1,49 @@
+from abc import ABC, abstractmethod
+from dataclasses import dataclass, field
+from typing import Any
+
+from task_pipeline.pipeline.task.base_task import BaseTask
+
+@dataclass
+class AbstractTask(ABC):
+    """
+    Abstract class for a pipeline task.
+    """
+
+    name: str
+
+    def __call__(self, *args: Any, **kwargs: Any) -> Any:
+        """Execute the task.
+
+        This calls the :meth:`run` method by default.
+
+        Args:
+            *args: Positional arguments for the task.
+            **kwargs: Keyword arguments for the task.
+
+        Returns:
+            Any: Result of task execution.
+        """
+        return self.run(*args, **kwargs)
+
+    def __rshift__(self, other: "AbstractTask") -> "AbstractTask":
+        """Chain this task to the next task using the ``>>`` operator.
+
+        Args:
+            other (AbstractTask): Task to execute after this task.
+
+        Returns:
+            AbstractTask: The next task in the pipeline.
+        """
+        raise NotImplementedError
+
+    def __lshift__(self, other: "AbstractTask") -> "AbstractTask":
+        """Chain this task to the previous task using the ``<<`` operator.
+
+        Args:
+            other (AbstractTask): Task to execute before this task.
+
+        Returns:
+            AbstractTask: This task.
+        """
+        raise NotImplementedError
