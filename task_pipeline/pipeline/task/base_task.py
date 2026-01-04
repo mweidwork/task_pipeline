@@ -4,11 +4,17 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from typing import Any, override
 
+from task_pipeline.pipeline.event import (
+    AbstractEvent,
+    TaskEventType,
+    post_task,
+    pre_task,
+)
 from task_pipeline.pipeline.task.abstract_task import AbstractTask
 
 
 @dataclass
-class BaseTask(AbstractTask, ABC):
+class BaseTask(AbstractTask, AbstractEvent, ABC):
     """
     Base class for a pipeline task.
 
@@ -65,7 +71,10 @@ class BaseTask(AbstractTask, ABC):
         Returns:
             Any: Result of the task execution.
         """
-        return self.run(*args, **kwargs)
+        self._execute_event(TaskEventType.PRE, *args, **kwargs)
+        result: Any = self.run(*args, **kwargs)
+        self._execute_event(TaskEventType.POST, *args, **kwargs)
+        return result
 
     @override
     def __rshift__(self, other: AbstractTask) -> BaseTask:
@@ -108,3 +117,11 @@ class BaseTask(AbstractTask, ABC):
 
         other.next_task = self
         return self
+
+    @pre_task
+    def _start(self, *args, **kwargs) -> None:
+        print(f"[START] {self.name}")
+
+    @post_task
+    def _end(self, *args, **kwargs) -> None:
+        print(f"[END] {self.name}")
