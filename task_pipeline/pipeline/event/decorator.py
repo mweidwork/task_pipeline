@@ -1,4 +1,5 @@
 from collections.abc import Callable
+from typing import Any, cast
 
 from .abstract_event import TaskEventType
 
@@ -24,8 +25,8 @@ def task_event(event_type: TaskEventType):
         Returns:
             The original function with event metadata attached.
         """
-        fn.__task_event_type__ = event_type
-        return fn
+        setattr(fn, "__task_event_type__", event_type)
+        return cast(Callable[..., Any], fn)
 
     return decorator
 

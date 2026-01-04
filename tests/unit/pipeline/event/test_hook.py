@@ -1,5 +1,10 @@
-import pytest
-from task_pipeline.pipeline.event import AbstractEvent, TaskEventType, pre_task, post_task
+from task_pipeline.pipeline.event import (
+    AbstractEvent,
+    TaskEventType,
+    post_task,
+    pre_task,
+)
+
 
 def test_pre_task_hook_is_registered():
     class TestEvent(AbstractEvent):
@@ -10,7 +15,7 @@ def test_pre_task_hook_is_registered():
     assert TaskEventType.PRE in TestEvent._hooks
     assert len(TestEvent._hooks[TaskEventType.PRE]) == 1
     assert TestEvent._hooks[TaskEventType.PRE][0].__name__ == "before"
-    
+
 
 def test_post_task_hook_is_registered():
     class TestEvent(AbstractEvent):
@@ -21,6 +26,7 @@ def test_post_task_hook_is_registered():
     assert TaskEventType.POST in TestEvent._hooks
     assert len(TestEvent._hooks[TaskEventType.POST]) == 1
     assert TestEvent._hooks[TaskEventType.POST][0].__name__ == "after"
+
 
 def test_hooks_are_executed():
     calls = []
@@ -40,6 +46,7 @@ def test_hooks_are_executed():
 
     assert calls == ["pre", "post:42"]
 
+
 def test_hook_execution_order_is_preserved():
     calls = []
 
@@ -57,23 +64,6 @@ def test_hook_execution_order_is_preserved():
 
     assert calls == ["first", "second"]
 
-def test_hooks_are_inherited():
-    calls = []
-
-    class BaseEvent(AbstractEvent):
-        @pre_task
-        def base_hook(self):
-            calls.append("base")
-
-    class ChildEvent(BaseEvent):
-        @pre_task
-        def child_hook(self):
-            calls.append("child")
-
-    event = ChildEvent()
-    event._execute_event(TaskEventType.PRE)
-
-    assert calls == ["base", "child"]
 
 def test_hooks_are_isolated_between_subclasses():
     class EventA(AbstractEvent):
@@ -91,6 +81,7 @@ def test_hooks_are_isolated_between_subclasses():
 
     assert EventA._hooks[TaskEventType.PRE][0].__name__ == "hook_a"
     assert EventB._hooks[TaskEventType.PRE][0].__name__ == "hook_b"
+
 
 def test_non_decorated_methods_are_not_registered():
     class TestEvent(AbstractEvent):

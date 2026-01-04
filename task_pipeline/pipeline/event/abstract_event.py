@@ -24,22 +24,22 @@ class AbstractEvent:
         super().__init_subclass__()
 
         # Initialize hook registry
-        cls._hooks = {event: [] for event in TaskEventType}
+        setattr(cls, "_hooks", {event: [] for event in TaskEventType})
 
         # Inherit hooks from base classes
         for base in cls.__mro__[1:]:
-            if hasattr(base, "_hooks"):
-                for event, hooks in base._hooks.items():
-                    cls._hooks[event].extend(hooks)
+            base_hooks = getattr(base, "_hooks", None)
+            if base_hooks:
+                for event_type, hooks in base_hooks._hooks.items():
+                    if isinstance(event_type, TaskEventType):
+                        getattr(cls, "_hooks")[event_type].extend(hooks)
 
         # Register hooks declared on this class
         for attr in cls.__dict__.values():
-            if not callable(attr):
-                continue
-
-            event_type = getattr(attr, "__task_event_type__", None)
-            if event_type is not None:
-                cls._hooks[event_type].append(attr)
+            if callable(attr):
+                event_type = getattr(attr, "__task_event_type__", None)
+                if isinstance(event_type, TaskEventType):
+                    getattr(cls, "_hooks")[event_type].append(attr)
 
     def _execute_event(self, event: TaskEventType, *args: Any, **kwargs: Any) -> None:
         """
@@ -51,5 +51,5 @@ class AbstractEvent:
             **kwargs: Keyword arguments passed to the hook.
         """
 
-        for hook in self._hooks[event]:
+        for hook in getattr(self, "_hooks")[event]:
             hook(self, *args, **kwargs)
